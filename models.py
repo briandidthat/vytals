@@ -6,7 +6,7 @@ class User(db.Model):
     """
     User model class to provide database mapping for user.
     - serialize: returns a dictionary representation of class attributes for easy JSONification.
-    - age: will return a formatted calculation of age based on birthdate
+    - age: (property) will return a formatted calculation of age based on birthdate
     """
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -27,7 +27,7 @@ class User(db.Model):
         return {
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "age": f"{self.age}",
+            "age": self.age,
             "email": self.email
         }
 
@@ -69,4 +69,23 @@ class Activity(db.Model):
     - serialize: returns a dictionary representation of class attributes for easy JSONificiation
     """
     id = db.Column(db.Integer, primary_key=True)
+    type = db.String(db.String(50), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    time = db.Column(db.Time, nullable=False)
+    description = db.String(db.String(200))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    def __init__(self, date, time, type, description, user_id):
+        self.date = date
+        self.time = time
+        self.type = type
+        self.description = description
+        self.user_id = user_id
+
+    def serialize(self):
+        return {
+            "type": self.type,
+            "date": str(self.date),
+            "time": str(self.time),
+            "description": self.description
+        }
