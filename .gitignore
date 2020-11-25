@@ -1,5 +1,9 @@
 /env
 .idea
 
+# testing db
+/test.db
+
+
 __pycache__/
 *.pyc
