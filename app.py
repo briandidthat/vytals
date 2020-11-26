@@ -9,8 +9,12 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config.DevelopmentConfig')
 
-    with app.app_context():
-        db.init_app(app)
+    # initialize application db
+    db.init_app(app)
+
+    # import and register blueprints
+    from views import main
+    app.register_blueprint(main)
 
     return app
 

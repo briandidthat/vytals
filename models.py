@@ -12,10 +12,10 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
-    birthday = db.Column(db.Date, nullable=False)
+    birthdate = db.Column(db.Date, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     readings = db.relationship('Reading', backref='user', lazy=True)
-    activities = db.relationship('Excercise', backref='user', lazy=True)
+    activities = db.relationship('Activity', backref='user', lazy=True)
 
     def __init__(self, first_name, last_name, birthdate, email):
         self.first_name = first_name
@@ -69,10 +69,10 @@ class Activity(db.Model):
     - serialize: returns a dictionary representation of class attributes for easy JSONificiation
     """
     id = db.Column(db.Integer, primary_key=True)
-    type = db.String(db.String(50), nullable=False)
+    type = db.Column(db.String(50), nullable=False)
     date = db.Column(db.Date, nullable=False)
     time = db.Column(db.Time, nullable=False)
-    description = db.String(db.String(200))
+    description = db.Column(db.String(200))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __init__(self, date, time, type, description, user_id):
