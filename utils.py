@@ -8,3 +8,11 @@ def calculate_age(birth_date):
     return age
 
 
+def parse_user(JSON):
+    first_name = JSON.get('first_name', None)
+    last_name = JSON.get('last_name', None)
+    birthdate = JSON.get('birthdate', None)
+    email = JSON.get('email', None)
+
+    from models import User
+    return User(first_name, last_name, date.fromisoformat(birthdate), email)
