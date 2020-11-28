@@ -45,13 +45,18 @@ class Reading(db.Model):
     weight = db.Column(db.Float, nullable=False)
     blood_pressure = db.Column(db.Float, nullable=False)
     temperature = db.Column(db.Float, nullable=False)
+    oxygen_level = db.Column(db.Float, nullable=False)
     pulse = db.Column(db.Integer, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, weight, blood_pressure, temperature, user_id):
+    def __init__(self, weight, blood_pressure, temperature, oxygen_level, pulse, datetime, user_id):
         self.weight = weight
         self.blood_pressure = blood_pressure
         self.temperature = temperature
+        self.oxygen_level = oxygen_level
+        self.pulse = pulse
+        self.datetime = datetime
         self.user_id = user_id
 
     def serialize(self):
@@ -59,7 +64,9 @@ class Reading(db.Model):
             "weight": self.weight,
             "blood_pressure": self.blood_pressure,
             "temperature": self.temperature,
-            "pulse": self.pulse
+            "oxygen_level": self.oxygen_level,
+            "pulse": self.pulse,
+            "datetime": str(self.datetime)
         }
 
 
@@ -70,22 +77,21 @@ class Activity(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    time = db.Column(db.Time, nullable=False)
-    description = db.Column(db.String(200))
+    duration = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, date, time, type, description, user_id):
-        self.date = date
-        self.time = time
+    def __init__(self, type, datetime, description, user_id):
         self.type = type
+        self.date_time = datetime
         self.description = description
         self.user_id = user_id
 
     def serialize(self):
         return {
             "type": self.type,
-            "date": str(self.date),
-            "time": str(self.time),
-            "description": self.description
+            "duration": self.duration,
+            "description": self.description,
+            "date_time": str(self.datetime)
         }

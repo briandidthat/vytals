@@ -19,3 +19,8 @@ def create_user():
     db.session.commit()
 
     return jsonify(user=data.serialize()), 201
+
+
+@main.route('/users/readings', methods=['POST'])
+def create_reading():
+    pass
