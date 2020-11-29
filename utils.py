@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from cerberus import Validator
 
@@ -41,11 +41,11 @@ def parse_activity(JSON):
     type = JSON.get('type', None)
     duration = JSON.get('duration', None)
     description = JSON.get('description', None)
-    datetime = JSON.get('datetime', None)
+    date_time = JSON.get('datetime', None)
     user_id = JSON.get('user_id', None)
 
     from models import Activity
-    return Activity(type, duration, description, datetime, user_id)
+    return Activity(type, duration, description, date_time, user_id)
 
 
 user_schema = {
@@ -56,7 +56,7 @@ user_schema = {
         'type': 'string'
     },
     'birthdate': {
-        'type': 'date'
+        'type': 'string'
     },
     'email': {
         'type': 'string'
