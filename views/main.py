@@ -7,7 +7,7 @@ from utils import (parse_user, parse_reading, parse_activity, activity_validator
 main = Blueprint('main', __name__)
 
 
-@main.route('/users', methods=['POST'])
+@main.route('/users/new', methods=['POST'])
 def create_user():
     if not user_validator.validate(request.json):
         raise ValueError()
@@ -24,7 +24,7 @@ def create_user():
     return jsonify(user=data.serialize()), 201
 
 
-@main.route('/readings/user/<int: id>', methods=['POST'])
+@main.route('/readings/user/new', methods=['POST'])
 def create_reading(id):
     if not reading_validator.validate(request.json):
         raise ValueError(reading_validator.errors)
@@ -43,7 +43,7 @@ def create_reading(id):
     return jsonify(reading=reading.serialize()), 201
 
 
-@main.route('/activities/user/<int: id>', methods=['POST'])
+@main.route('/activities/user/new', methods=['POST'])
 def create_activity(id):
     if not activity_validator.validate(request.json):
         raise ValueError(activity_validator.errors)
