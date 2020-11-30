@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from app import db
-from models import User, Reading
+from models import Activity, User, Reading
 from utils import (parse_user, parse_reading, parse_activity, activity_validator, reading_validator, user_validator)
 
 main = Blueprint('main', __name__)
@@ -40,7 +40,6 @@ def create_reading():
     if user is None:
         raise LookupError("Sorry, that user does not exist.")
 
-    reading.user_id = user.id
     db.session.add(reading)
     db.session.commit()
 
@@ -52,7 +51,7 @@ def get_readings(id):
     readings = Reading.query.filter_by(user_id=id).all()
 
     if len(readings) == 0:
-        raise LookupError(f"There is no user associate with the id {id}.")
+        raise LookupError(f"There are no activities associated with id {id}.")
 
     return jsonify(readings=[r.serialize() for r in readings]), 200
 
@@ -73,3 +72,13 @@ def create_activity(id):
     db.session.commit()
 
     return jsonify(activity=activity.serialize()), 201
+
+
+@main.route('/activities/user/all/<int:id>', methods=['GET'])
+def get_activities(id):
+    activities = Activity.query.filter_by(user_id=id).all()
+
+    if len(activities) == 0:
+        raise LookupError(f"There are no readings associated with the id {id}.")
+
+    return jsonify(activities=[a.serialize() for a in activities]), 200
