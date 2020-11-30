@@ -15,11 +15,12 @@ def calculate_age(birth_date):
 def parse_user(JSON):
     first_name = JSON.get('first_name', None)
     last_name = JSON.get('last_name', None)
-    birthdate = JSON.get('birthdate', None)
+    birthdate_string = JSON.get('birthdate', None)
+    birthdate = date.fromisoformat(birthdate_string)
     email = JSON.get('email', None)
 
     from models import User
-    return User(first_name, last_name, date.fromisoformat(birthdate), email)
+    return User(first_name, last_name, birthdate, email)
 
 
 # will parse reading data from json and return Reading instance
@@ -31,10 +32,9 @@ def parse_reading(JSON):
     pulse = JSON.get('pulse', None)
     date_time = JSON.get('date_time', None)
     timestamp = datetime.fromisoformat(date_time)  # convert string to datetime object
-    user_id = JSON.get('user_id', None)
 
     from models import Reading
-    return Reading(weight, blood_pressure, temperature, oxygen_level, pulse, timestamp, user_id)
+    return Reading(weight, blood_pressure, temperature, oxygen_level, pulse, timestamp, None)
 
 
 # will parse activity data from json and return Activity instance
@@ -44,10 +44,9 @@ def parse_activity(JSON):
     description = JSON.get('description', None)
     date_time = JSON.get('datetime', None)
     timestamp = datetime.fromisoformat(date_time)  # convert string to datetime object
-    user_id = JSON.get('user_id', None)
 
     from models import Activity
-    return Activity(type, duration, description, timestamp, user_id)
+    return Activity(type, duration, description, timestamp, None)
 
 
 user_schema = {
@@ -85,9 +84,6 @@ reading_schema = {
     },
     'date_time': {
         'type': 'string'
-    },
-    'user_id': {
-        'type': 'number'
     }
 }
 
@@ -105,9 +101,6 @@ activity_schema = {
     },
     'datetime': {
         'type': 'string'
-    },
-    'user_id': {
-        'type': 'number'
     }
 }
 

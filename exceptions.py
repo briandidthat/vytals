@@ -1,6 +1,6 @@
 class InvalidUsage(Exception):
     """
-    Custom exception clas that will receive the error message, status_code, and payload.
+    Custom exception class that will receive the error message, status_code, and payload.
     - to_dict() will return dictionary representation of error object.
     """
     status_code = 400
