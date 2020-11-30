@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from app import db
-from models import User
+from models import User, Reading
 from utils import (parse_user, parse_reading, parse_activity, activity_validator, reading_validator, user_validator)
 
 main = Blueprint('main', __name__)
@@ -10,7 +10,6 @@ main = Blueprint('main', __name__)
 @main.route('/users/new', methods=['POST'])
 def create_user():
     if not user_validator.validate(request.json):
-        print(type(request.json['birthdate']))
         raise ValueError(user_validator.errors)
 
     data = parse_user(request.json)
@@ -46,6 +45,16 @@ def create_reading():
     db.session.commit()
 
     return jsonify(reading=reading.serialize()), 201
+
+
+@main.route('/readings/user/all/<int:id>', methods=['GET'])
+def get_readings(id):
+    readings = Reading.query.filter_by(user_id=id).all()
+
+    if len(readings) == 0:
+        raise LookupError(f"There is no user associate with the id {id}.")
+
+    return jsonify(readings=[r.serialize() for r in readings]), 200
 
 
 @main.route('/activities/user/new', methods=['POST'])

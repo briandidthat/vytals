@@ -29,11 +29,12 @@ def parse_reading(JSON):
     temperature = JSON.get('temperature', None)
     oxygen_level = JSON.get('oxygen_level', None)
     pulse = JSON.get('pulse', None)
-    datetime = JSON.get('date_time', None)
+    date_time = JSON.get('date_time', None)
+    timestamp = datetime.fromisoformat(date_time)  # convert string to datetime object
     user_id = JSON.get('user_id', None)
 
     from models import Reading
-    return Reading(weight, blood_pressure, temperature, oxygen_level, pulse, datetime, user_id)
+    return Reading(weight, blood_pressure, temperature, oxygen_level, pulse, timestamp, user_id)
 
 
 # will parse activity data from json and return Activity instance
@@ -42,10 +43,11 @@ def parse_activity(JSON):
     duration = JSON.get('duration', None)
     description = JSON.get('description', None)
     date_time = JSON.get('datetime', None)
+    timestamp = datetime.fromisoformat(date_time)  # convert string to datetime object
     user_id = JSON.get('user_id', None)
 
     from models import Activity
-    return Activity(type, duration, description, date_time, user_id)
+    return Activity(type, duration, description, timestamp, user_id)
 
 
 user_schema = {
@@ -81,8 +83,8 @@ reading_schema = {
     'pulse': {
         'type': 'number'
     },
-    'datetime': {
-        'type': 'datetime'
+    'date_time': {
+        'type': 'string'
     },
     'user_id': {
         'type': 'number'
@@ -102,7 +104,7 @@ activity_schema = {
         'type': 'string'
     },
     'datetime': {
-        'type': 'datetime'
+        'type': 'string'
     },
     'user_id': {
         'type': 'number'
