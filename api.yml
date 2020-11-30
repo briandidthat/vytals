@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Vytals
+servers:
+  - url: 'http://localhost:5000'
+paths:
+  /users/new:
+    post:
+      summary: 'Create new user.'
+      requestBody:
+          description: 'User object will be used to store new user in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: 'User was succesfully stored in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/all:
+    get:
+      summary: 'Get all users'
+      description: 'Retrieve all existing users in the system.'
+      responses:
+        '200':
+          description: 'Users have been succesfully retrieved.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /readings/users/{id}/new:
+    post:
+      summary: 'Create new reading.'
+      parameters:
+        - name: id
+          in: path
+          description: 'User id.'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Store a new reading in the database.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reading'
+      responses:
+        '200':
+          description: 'Successfully stored new reading in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reading'
+        '404':
+          description: 'User associated with reading was not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /readings/users/{id}/all:
+    get:
+      summary: 'Get all readings by user.'
+      parameters:
+        - name: id
+          in: path
+          description: 'User id.'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successfully retrieved all readings associated with user.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Reading'
+  /activities/users/{id}/new:
+    post:
+      summary: 'Create new activity.'
+      parameters:
+        - name: id
+          in: path
+          description: 'User id.'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 'Store a new activity in the database.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Reading'
+      responses:
+        '200':
+          description: 'Activity was succesfully stored in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Activity'
+        '404':
+          description: 'User associated with activity was not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: 'Invalid input format.'
+  /activities/users/{id}/all:
+    get:
+      summary: 'Get all activities by user.'
+      parameters:
+        - name: id
+          in: path
+          description: 'User id.'
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Successfully retrieved all activities associated with user.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+        '404':
+          description: 'User associated with activity was not found in the system.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - first_name
+        - last_name
+        - birthdate
+        - email
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        birthdate:
+          type: string
+          format: date-time
+        email:
+          type: string
+          format: email
+
+    Reading:
+      type: object
+      required:
+        - weight
+        - blood_pressure
+        - temperature
+        - oxygen_level
+        - pulse
+        - timestamp
+      properties:
+        id:
+          type: integer
+          format: int64
+        weight:
+          type: number
+          format: float
+        blood_pressure:
+          type: number
+          format: float
+        temperature:
+          type: number
+          format: float
+        oxygen_level:
+          type: number
+          format: float
+        pulse:
+          type: number
+          format: float
+        timestamp:
+          type: string
+          format: date-time
+        user_id:
+          type: integer
+          format: int64
+    Activity:
+      type: object
+      required:
+        - type
+        - duration
+        - description
+        - timestamp
+      properties:
+        id:
+          type: integer
+          format: int64
+        type:
+          type: string
+        duration:
+          type: string
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        user_id:
+          type: integer
+          format: int64
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
