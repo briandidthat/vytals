@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 
 from app import db
 from exceptions import InvalidUsage
@@ -55,7 +55,7 @@ def get_readings(id: int):
     if len(readings) == 0:
         raise InvalidUsage(f"There are no readings associated with id {id}.", status_code=404)
 
-    return jsonify(readings=[r.serialize() for r in readings]), 200
+    return render_template('readings.html', readings=readings)
 
 
 @main.route('/activities/user/<int:id>/new', methods=['POST'])
@@ -83,7 +83,7 @@ def get_activities(id):
     if len(activities) == 0:
         raise InvalidUsage(f"There are no readings associated with the id {id}.", status_code=404)
 
-    return jsonify(activities=[a.serialize() for a in activities]), 200
+    return render_template('activities.html', activities=activities)
 
 
 @main.errorhandler(InvalidUsage)
