@@ -28,10 +28,3 @@ def create_user():
 def get_all_users():
     users = User.query.all()
     return jsonify(users=[u.serialize() for u in users]), 200
-
-
-@main.errorhandler(InvalidUsage)
-def invalid_usage(error):
-    response = jsonify(error.to_dict())
-    response.status_code = error.status_code
-    return response
