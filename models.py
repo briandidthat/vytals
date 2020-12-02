@@ -1,5 +1,5 @@
 from app import db
-from utils import calculate_age
+from utils import calculate_age, calculate_duration
 
 
 class User(db.Model):
@@ -78,22 +78,29 @@ class Activity(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50), nullable=False)
-    duration = db.Column(db.String(50), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.String(200), nullable=False)
-    timestamp = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, type, duration, description, timestamp, user_id):
+    def __init__(self, type, start_time, end_time, description, user_id):
         self.type = type
-        self.duration = duration
+        self.start_time = start_time
+        self.end_time = end_time
         self.description = description
-        self.timestamp = timestamp
         self.user_id = user_id
 
     def serialize(self):
         return {
             "type": self.type,
-            "duration": self.duration,
             "description": self.description,
-            "timestamp": str(self.timestamp)
+            "start_time": str(self.start_time),
+            "end_time": str(self.end_time),
+            "duration": self.duration
         }
+
+    @property
+    def duration(self):
+        minutes, seconds = calculate_duration(self.start_time, self.end_time)
+
+        return f"{minutes} minutes {seconds} seconds"

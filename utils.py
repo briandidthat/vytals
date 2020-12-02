@@ -3,8 +3,19 @@ from datetime import date, datetime
 from cerberus import Validator
 
 
+def calculate_duration(start_time: datetime, end_time: datetime):
+    if not all(isinstance(i, datetime) for i in [start_time, end_time]):
+        raise ValueError("Invalid type.")
+
+    difference = end_time - start_time
+    seconds = difference.total_seconds()
+    minutes = divmod(seconds, 60)
+
+    return minutes
+
+
 # will calculate age based on current date - birthdate
-def calculate_age(birth_date):
+def calculate_age(birth_date: date):
     today = date.today()
     age = today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
 
@@ -12,7 +23,7 @@ def calculate_age(birth_date):
 
 
 # will parse user data from json and return User instance
-def parse_user(JSON):
+def parse_user(JSON: dict):
     first_name = JSON.get('first_name', None)
     last_name = JSON.get('last_name', None)
     birthdate_string = JSON.get('birthdate', None)
@@ -24,7 +35,7 @@ def parse_user(JSON):
 
 
 # will parse reading data from json and return Reading instance
-def parse_reading(JSON):
+def parse_reading(JSON: dict):
     weight = JSON.get('weight', None)
     blood_pressure = JSON.get('blood_pressure', None)
     temperature = JSON.get('temperature', None)
@@ -38,7 +49,7 @@ def parse_reading(JSON):
 
 
 # will parse activity data from json and return Activity instance
-def parse_activity(JSON):
+def parse_activity(JSON: dict):
     type = JSON.get('type', None)
     duration = JSON.get('duration', None)
     description = JSON.get('description', None)
