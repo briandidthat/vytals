@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app import db
 from utils import calculate_age, calculate_duration
 
@@ -103,4 +105,4 @@ class Activity(db.Model):
     def duration(self):
         minutes, seconds = calculate_duration(self.start_time, self.end_time)
 
-        return f"{minutes} minutes {seconds} seconds"
+        return f"{minutes} minutes:{seconds} seconds"

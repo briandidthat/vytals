@@ -53,12 +53,12 @@ def parse_activity(JSON: dict):
     type = JSON.get('type', None)
     description = JSON.get('description', None)
     start_time = JSON.get('start_time', None)
-    start_time = datetime.fromisoformat(start_time)  # convert string to datetime object
     end_time = JSON.get('end_time', None)
-    end_time = datetime.fromisoformat(end_time)   # convert string to datetime object
+    start_datetime = datetime.fromisoformat(start_time)  # convert string to datetime object
+    end_datetime = datetime.fromisoformat(end_time)   # convert string to datetime object
 
     from models import Activity
-    return Activity(type, description, start_time, end_time,  None)
+    return Activity(type, description, start_datetime, end_datetime,  None)
 
 
 user_schema = {
