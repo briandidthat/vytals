@@ -51,13 +51,14 @@ def parse_reading(JSON: dict):
 # will parse activity data from json and return Activity instance
 def parse_activity(JSON: dict):
     type = JSON.get('type', None)
-    duration = JSON.get('duration', None)
     description = JSON.get('description', None)
-    date_time = JSON.get('datetime', None)
-    timestamp = datetime.fromisoformat(date_time)  # convert string to datetime object
+    start_time = JSON.get('start_time', None)
+    start_time = datetime.fromisoformat(start_time)  # convert string to datetime object
+    end_time = JSON.get('end_time', None)
+    end_time = datetime.fromisoformat(end_time)   # convert string to datetime object
 
     from models import Activity
-    return Activity(type, duration, description, timestamp, None)
+    return Activity(type, description, start_time, end_time,  None)
 
 
 user_schema = {
@@ -104,13 +105,13 @@ activity_schema = {
     'type': {
         'type': 'string'
     },
-    'duration': {
-        'type': 'string'
-    },
     'description': {
         'type': 'string'
     },
-    'datetime': {
+    'start_time': {
+        'type': 'string'
+    },
+    'end_time': {
         'type': 'string'
     }
 }

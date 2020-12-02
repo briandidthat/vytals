@@ -78,16 +78,16 @@ class Activity(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(200), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
-    description = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, type, start_time, end_time, description, user_id):
+    def __init__(self, type, description, start_time, end_time, user_id):
         self.type = type
+        self.description = description
         self.start_time = start_time
         self.end_time = end_time
-        self.description = description
         self.user_id = user_id
 
     def serialize(self):
