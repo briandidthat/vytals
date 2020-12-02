@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify
 
 from app import db
 from exceptions import InvalidUsage
-from models import Activity, User, Reading
-from utils import (parse_user, parse_reading, parse_activity, activity_validator, reading_validator, user_validator)
+from models import User
+from utils import parse_user, user_validator
 
 main = Blueprint('main', __name__)
 
@@ -28,62 +28,6 @@ def create_user():
 def get_all_users():
     users = User.query.all()
     return jsonify(users=[u.serialize() for u in users]), 200
-
-
-@main.route('/readings/user/<int:id>/new', methods=['POST'])
-def create_reading(id: int):
-    if not reading_validator.validate(request.json):
-        raise InvalidUsage(reading_validator.errors, status_code=422)
-
-    reading = parse_reading(request.json)
-    user = User.query.filter_by(id=id).first()
-
-    if user is None:
-        raise InvalidUsage("Sorry, that user does not exist.", status_code=404)
-
-    reading.user_id = user.id
-    db.session.add(reading)
-    db.session.commit()
-
-    return jsonify(reading=reading.serialize()), 201
-
-
-@main.route('/readings/user/<int:id>/all', methods=['GET'])
-def get_readings(id: int):
-    readings = Reading.query.filter_by(user_id=id).all()
-
-    if len(readings) == 0:
-        raise InvalidUsage(f"There are no readings associated with id {id}.", status_code=404)
-
-    return render_template('readings.html', readings=readings)
-
-
-@main.route('/activities/user/<int:id>/new', methods=['POST'])
-def create_activity(id: int):
-    if not activity_validator.validate(request.json):
-        raise InvalidUsage(activity_validator.errors, status_code=422)
-
-    activity = parse_activity(request.json)
-    user = User.query.filter_by(user_id=id).first()
-
-    if user is None:
-        raise InvalidUsage("Sorry, that user does not exist.", status_code=404)
-
-    activity.user_id = user.id
-    db.session.add(activity)
-    db.session.commit()
-
-    return jsonify(activity=activity.serialize()), 201
-
-
-@main.route('/activities/user/<int:id>/all', methods=['GET'])
-def get_activities(id):
-    activities = Activity.query.filter_by(user_id=id).all()
-
-    if len(activities) == 0:
-        raise InvalidUsage(f"There are no readings associated with the id {id}.", status_code=404)
-
-    return render_template('activities.html', activities=activities)
 
 
 @main.errorhandler(InvalidUsage)
