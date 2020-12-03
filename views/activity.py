@@ -1,29 +1,29 @@
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, request, jsonify, render_template, redirect, url_for
 
 from app import db
 from exceptions import InvalidUsage
 from models import Activity, User
-from utils import parse_activity, activity_validator
+from utils import parse_activity
+from forms import ActivityForm
 
 activity = Blueprint('activity', __name__)
 
 
-@activity.route('/activities/user/<int:id>/new', methods=['POST'])
-def create_activity(id: int):
-    if not activity_validator.validate(request.json):
-        raise InvalidUsage(activity_validator.errors, status_code=422)
+@activity.route('/activities/user/new', methods=['GET', 'POST'])
+def create_activity():
+    form = ActivityForm()
+    if form.validate_on_submit():
+        activity = parse_activity(request.json)
+        user = User.query.filter_by(user_id=id).first()
 
-    activity = parse_activity(request.json)
-    user = User.query.filter_by(user_id=id).first()
+        if user is None:
+            raise InvalidUsage("Sorry, that user does not exist.", status_code=404)
 
-    if user is None:
-        raise InvalidUsage("Sorry, that user does not exist.", status_code=404)
-
-    activity.user_id = user.id
-    db.session.add(activity)
-    db.session.commit()
-
-    return jsonify(activity=activity.serialize()), 201
+        activity.user_id = user.id
+        db.session.add(activity)
+        db.session.commit()
+        return redirect(url_for('get_activities'))
+    return render_template('add-activity.html', form=form)
 
 
 @activity.route('/activities/user/<int:id>/all', methods=['GET'])

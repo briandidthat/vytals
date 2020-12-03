@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="formwrapper">
+    <form method="POST" action={{ url_for(
+    "activity.create_activity")}}>
+    <fieldset class="form-field">
+        {{ form.type.label }}
+        {{ form.type(size=20) }}
+        {% if form.type.errors %}
+        <ul class="errors">
+            {% for error in form.type.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </fieldset>
+    <fieldset class="form-field">
+        {{ form.description.label }}
+        {{ form.description(size=20) }}
+          {% if form.description.errors %}
+        <ul class="errors">
+            {% for error in form.description.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </fieldset>
+    <fieldset class="form-field">
+        {{ form.start_time.label }}
+        {{ form.start_time(size=20) }}
+          {% if form.start_time.errors %}
+        <ul class="errors">
+            {% for error in form.start_time.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </fieldset>
+    <fieldset class="form-field">
+        {{ form.end_time.label }}
+        {{ form.end_time(size=20) }}
+          {% if form.end_time.errors %}
+        <ul class="errors">
+            {% for error in form.end_time.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </fieldset>
+    <fieldset class="form-field">
+        {{ form.user_id.label }}
+        {{ form.user_id(size=20) }}
+          {% if form.user_id.errors %}
+        <ul class="errors">
+            {% for error in form.user_id.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </fieldset>
+    {{ form.submit }}
+    </form>
+</div>
+{% endblock %}

@@ -1,7 +1,5 @@
 from datetime import date, datetime
 
-from cerberus import Validator
-
 
 def calculate_duration(start_time: datetime, end_time: datetime):
     if not all(isinstance(i, datetime) for i in [start_time, end_time]):
@@ -55,65 +53,8 @@ def parse_activity(JSON: dict):
     start_time = JSON.get('start_time', None)
     end_time = JSON.get('end_time', None)
     start_datetime = datetime.fromisoformat(start_time)  # convert string to datetime object
-    end_datetime = datetime.fromisoformat(end_time)   # convert string to datetime object
+    end_datetime = datetime.fromisoformat(end_time)  # convert string to datetime object
+    user_id = JSON.get('user_id', None)
 
     from models import Activity
-    return Activity(type, description, start_datetime, end_datetime,  None)
-
-
-user_schema = {
-    'first_name': {
-        'type': 'string'
-    },
-    'last_name': {
-        'type': 'string'
-    },
-    'birthdate': {
-        'type': 'string'
-    },
-    'email': {
-        'type': 'string'
-    }
-}
-
-user_validator = Validator(user_schema)
-
-reading_schema = {
-    'weight': {
-        'type': 'number'
-    },
-    'blood_pressure': {
-        'type': 'number'
-    },
-    'temperature': {
-        'type': 'number'
-    },
-    'oxygen_level': {
-        'type': 'number'
-    },
-    'pulse': {
-        'type': 'number'
-    },
-    'date_time': {
-        'type': 'string'
-    }
-}
-
-reading_validator = Validator(reading_schema)
-
-activity_schema = {
-    'type': {
-        'type': 'string'
-    },
-    'description': {
-        'type': 'string'
-    },
-    'start_time': {
-        'type': 'string'
-    },
-    'end_time': {
-        'type': 'string'
-    }
-}
-
-activity_validator = Validator(activity_schema)
+    return Activity(type, description, start_datetime, end_datetime, user_id)

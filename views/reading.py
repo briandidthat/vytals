@@ -3,15 +3,15 @@ from flask import Blueprint, request, jsonify, render_template
 from app import db
 from exceptions import InvalidUsage
 from models import Reading, User
-from utils import parse_reading, reading_validator
+from utils import parse_reading
 
 reading = Blueprint('reading', __name__)
 
 
 @reading.route('/readings/user/<int:id>/new', methods=['POST'])
 def create_reading(id: int):
-    if not reading_validator.validate(request.json):
-        raise InvalidUsage(reading_validator.errors, status_code=422)
+    # if not reading_validator.validate(request.json):
+    #     raise InvalidUsage(reading_validator.errors, status_code=422)
 
     reading = parse_reading(request.json)
     user = User.query.filter_by(id=id).first()

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, DateField, DateTimeField, IntegerField, SubmitField, DecimalField, TimeField
+from wtforms import StringField, DateField, DateTimeField, IntegerField, SubmitField, DecimalField
 from wtforms.validators import DataRequired, Email
 
 
@@ -7,7 +7,7 @@ class UserForm(FlaskForm):
     first_name = StringField('first_name', validators=[DataRequired("First name is required.")])
     last_name = StringField('last_name', validators=[DataRequired("Last name is required.")])
     birthdate = DateField('birthdate', validators=[DataRequired("Birthdate is required.")])
-    email = StringField('email', validators=[Email("Incorrect email format."), DateField("Email is required.")])
+    email = StringField('email', validators=[Email("Incorrect email format."), DataRequired("Email is required.")])
     submit = SubmitField('submit')
 
 
@@ -26,4 +26,5 @@ class ActivityForm(FlaskForm):
     description = StringField('description', validators=[DataRequired('Description is required.')])
     start_time = DateTimeField('start_time', validators=[DataRequired('Start time is required.')])
     end_time = DateTimeField('end_time', validators=[DataRequired('End time is required.')])
+    user_id = IntegerField('user_id', validators=[DataRequired("User id is required.")])
     submit = SubmitField('submit')

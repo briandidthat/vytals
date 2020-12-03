@@ -3,15 +3,15 @@ from flask import Blueprint, request, jsonify
 from app import db
 from exceptions import InvalidUsage
 from models import User
-from utils import parse_user, user_validator
+from utils import parse_user
 
 main = Blueprint('main', __name__)
 
 
 @main.route('/users/new', methods=['POST'])
 def create_user():
-    if not user_validator.validate(request.json):
-        raise InvalidUsage(user_validator.errors, status_code=422)
+    # if not user_validator.validate(request.json):
+    #     raise InvalidUsage(user_validator.errors, status_code=422)
 
     data = parse_user(request.json)
     user = User.query.filter_by(email=data.email).first()
