@@ -1,10 +1,10 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 
 from vytals import db
-from exceptions import InvalidUsage
+from vytals.exceptions import InvalidUsage
 from vytals.models import Activity, User
 from vytals.utils import parse_activity
-from forms import ActivityForm
+from vytals.forms import ActivityForm
 
 activity = Blueprint('activity', __name__)
 

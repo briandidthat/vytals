@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from exceptions import InvalidUsage
+from vytals.exceptions import InvalidUsage
 from flask_sqlalchemy import SQLAlchemy
 
 # instantiate db object

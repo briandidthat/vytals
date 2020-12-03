@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from vytals import db
-from exceptions import InvalidUsage
+from vytals.exceptions import InvalidUsage
 from vytals.models import User
 from vytals.utils import parse_user
 

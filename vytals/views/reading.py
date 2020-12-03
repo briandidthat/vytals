@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, render_template
 
 from vytals import db
-from exceptions import InvalidUsage
+from vytals.exceptions import InvalidUsage
 from vytals.models import Reading, User
 from vytals.utils import parse_reading
 
