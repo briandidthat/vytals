@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-def create_app():
+def init_app():
     app = Flask(__name__)
     app.config.from_object('config.DevelopmentConfig')
 
@@ -20,14 +20,9 @@ def create_app():
         return response
 
     # import and register blueprints
-    from views import main, reading, activity
+    from vytals.views import main, reading, activity
     app.register_blueprint(main)
     app.register_blueprint(reading)
     app.register_blueprint(activity)
 
     return app
-
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run()

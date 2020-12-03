@@ -1,9 +1,9 @@
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for
 
-from app import db
+from vytals import db
 from exceptions import InvalidUsage
-from models import Activity, User
-from utils import parse_activity
+from vytals.models import Activity, User
+from vytals.utils import parse_activity
 from forms import ActivityForm
 
 activity = Blueprint('activity', __name__)

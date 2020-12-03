@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify, render_template
 
-from app import db
+from vytals import db
 from exceptions import InvalidUsage
-from models import Reading, User
-from utils import parse_reading
+from vytals.models import Reading, User
+from vytals.utils import parse_reading
 
 reading = Blueprint('reading', __name__)
 
