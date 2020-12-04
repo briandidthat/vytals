@@ -11,19 +11,21 @@ def init_app():
     app = Flask(__name__)
     app.config.from_object('config.DevelopmentConfig')
 
-    # initialize application db
-    db.init_app(app)
+    with app.app_context():
 
-    @app.errorhandler(InvalidUsage)
-    def invalid_usage(error):
-        response = jsonify(error.to_dict())
-        response.status_code = error.status_code
-        return response
+        # initialize application db
+        db.init_app(app)
 
-    # import and register blueprints
-    from vytals.views import main, reading, activity
-    app.register_blueprint(main)
-    app.register_blueprint(reading)
-    app.register_blueprint(activity)
+        @app.errorhandler(InvalidUsage)
+        def invalid_usage(error):
+            response = jsonify(error.to_dict())
+            response.status_code = error.status_code
+            return response
+
+        # import and register blueprints
+        from vytals.views import main, reading, activity
+        app.register_blueprint(main)
+        app.register_blueprint(reading)
+        app.register_blueprint(activity)
 
     return app
