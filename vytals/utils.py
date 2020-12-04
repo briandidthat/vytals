@@ -1,9 +1,20 @@
 from datetime import date, datetime
+
 from cerberus import Validator
+from email_validator import validate_email, EmailNotValidError
+
 from vytals.exceptions import InvalidUsage
 
 to_date = lambda s: datetime.strptime(s, '%Y-%m-%d')
 to_date_time = lambda s: datetime.fromisoformat(s)
+
+
+def test_email_address(email: str):
+    try:
+        valid = validate_email(email)
+        return valid.email
+    except EmailNotValidError as e:
+        raise InvalidUsage(message=str(e), status_code=422)
 
 
 def calculate_duration(start_time: datetime, end_time: datetime):
@@ -77,7 +88,8 @@ user_schema = {
         'coerce': to_date
     },
     'email': {
-        'type': 'string'
+        'type': 'string',
+        'coerce': test_email_address,
     }
 }
 
@@ -125,5 +137,3 @@ activity_schema = {
 }
 
 activity_validator = Validator(activity_schema)
-
-
