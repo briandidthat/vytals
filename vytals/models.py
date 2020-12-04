@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash
+
 from vytals import db
 from .utils import calculate_age, calculate_duration
 
@@ -12,24 +14,30 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
-    birthdate = db.Column(db.Date, nullable=False)
+    username = db.Column(db.String(50), nullable=False, unique=True)
+    password = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    birthdate = db.Column(db.Date, nullable=False)
+    roles = db.relationship('Role', secondary='user_role', lazy='select', backref=db.backref('user', lazy=True))
     readings = db.relationship('Reading', backref='user', lazy=True)
     activities = db.relationship('Activity', backref='user', lazy=True)
 
-    def __init__(self, first_name, last_name, birthdate, email):
+    def __init__(self, first_name, last_name, username, password, email, birthdate):
         self.first_name = first_name
         self.last_name = last_name
-        self.birthdate = birthdate
+        self.username = username
+        self.password = generate_password_hash(password)
         self.email = email
+        self.birthdate = birthdate
 
     def serialize(self):
         return {
             "id": self.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "age": self.age,
-            "email": self.email
+            "username": self.username,
+            "email": self.email,
+            "age": self.age
         }
 
     @property
@@ -42,6 +50,7 @@ class Reading(db.Model):
     Reading model class to provide database mapping to vital readings.
     - serialize: returns a dictionary representation of class attributes for easy JSONification.
     """
+    __tablename_ = 'reading'
     id = db.Column(db.Integer, primary_key=True)
     weight = db.Column(db.Float, nullable=False)
     blood_pressure = db.Column(db.Float, nullable=False)
@@ -76,6 +85,7 @@ class Activity(db.Model):
     Activity model class to provide database mapping to activities.
     - serialize: returns a dictionary representation of class attributes for easy JSONificiation
     """
+    __tablename__ = 'activity'
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(50), nullable=False)
     description = db.Column(db.String(200), nullable=False)
@@ -104,3 +114,17 @@ class Activity(db.Model):
         minutes, seconds = calculate_duration(self.start_time, self.end_time)
 
         return f"{minutes} minutes:{seconds} seconds"
+
+
+class Role(db.Model):
+    __tablename__ = 'role'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+
+user_role = db.Table('user_role',
+                     db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+                     db.Column('role_id', db.Integer, db.ForeignKey('role.id'), primary_key=True))

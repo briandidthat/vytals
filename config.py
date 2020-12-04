@@ -15,6 +15,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
+class TestConfig(Config):
+    TESTING = True
+
+
 class DevelopmentConfig(Config):
     DEBUG = True
     ENV = 'development'
