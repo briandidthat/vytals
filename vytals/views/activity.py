@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from sqlalchemy.exc import SQLAlchemyError
 
 from vytals import db
 from vytals.exceptions import InvalidUsage
@@ -21,7 +22,13 @@ def create_activity(id: int):
 
     activity.user_id = user.id
     db.session.add(activity)
-    db.session.commit()
+
+    try:
+        db.session.commit(activity)
+    except SQLAlchemyError:
+        db.session.rollback()
+        raise InvalidUsage("Internal server error.", status_code=500)
+
     return jsonify(activity=activity.serialize()), 201
 
 

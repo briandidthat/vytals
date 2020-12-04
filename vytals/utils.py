@@ -81,6 +81,17 @@ def parse_activity(JSON: dict):
     return Activity(type, description, start_datetime, end_datetime, user_id)
 
 
+login_schema = {
+    'username': {
+        'type': 'string'
+    },
+    'password': {
+        'type': 'string'
+    }
+}
+
+login_validator = Validator(login_schema)
+
 user_schema = {
     'first_name': {
         'type': 'string'
