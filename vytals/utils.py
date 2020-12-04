@@ -12,7 +12,7 @@ to_date_time = lambda s: datetime.fromisoformat(s)
 def test_email_address(email: str):
     try:
         valid = validate_email(email)
-        return valid.email
+        return str(valid.email)
     except EmailNotValidError as e:
         raise InvalidUsage(message=str(e), status_code=422)
 
@@ -40,12 +40,14 @@ def calculate_age(birth_date: date):
 def parse_user(JSON: dict):
     first_name = JSON.get('first_name', None)
     last_name = JSON.get('last_name', None)
+    username = JSON.get('username', None)
+    password = JSON.get('password', None)
     birthdate_string = JSON.get('birthdate', None)
     birthdate = date.fromisoformat(birthdate_string)
     email = JSON.get('email', None)
 
     from vytals.models import User
-    return User(first_name, last_name, birthdate, email)
+    return User(first_name, last_name, username, password, email, birthdate)
 
 
 # will parse reading data from json and return Reading instance
@@ -81,6 +83,12 @@ user_schema = {
         'type': 'string'
     },
     'last_name': {
+        'type': 'string'
+    },
+    'username': {
+        'type': 'string'
+    },
+    'password': {
         'type': 'string'
     },
     'birthdate': {
