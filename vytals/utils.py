@@ -1,11 +1,14 @@
 from datetime import date, datetime
-
 from cerberus import Validator
+from vytals.exceptions import InvalidUsage
+
+to_date = lambda s: datetime.strptime(s, '%Y-%m-%d')
+to_date_time = lambda s: datetime.fromisoformat(s)
 
 
 def calculate_duration(start_time: datetime, end_time: datetime):
     if not all(isinstance(i, datetime) for i in [start_time, end_time]):
-        raise ValueError("Invalid type.")
+        raise InvalidUsage(message="Invalid type.", status_code=422)
 
     difference = end_time - start_time
     seconds = difference.total_seconds()
@@ -30,7 +33,7 @@ def parse_user(JSON: dict):
     birthdate = date.fromisoformat(birthdate_string)
     email = JSON.get('email', None)
 
-    from models import User
+    from vytals.models import User
     return User(first_name, last_name, birthdate, email)
 
 
@@ -44,7 +47,7 @@ def parse_reading(JSON: dict):
     date_time = JSON.get('date_time', None)
     timestamp = datetime.fromisoformat(date_time)  # convert string to datetime object
 
-    from models import Reading
+    from vytals.models import Reading
     return Reading(weight, blood_pressure, temperature, oxygen_level, pulse, timestamp, None)
 
 
@@ -55,10 +58,11 @@ def parse_activity(JSON: dict):
     start_time = JSON.get('start_time', None)
     end_time = JSON.get('end_time', None)
     start_datetime = datetime.fromisoformat(start_time)  # convert string to datetime object
-    end_datetime = datetime.fromisoformat(end_time)   # convert string to datetime object
+    end_datetime = datetime.fromisoformat(end_time)  # convert string to datetime object
+    user_id = JSON.get('user_id', None)
 
-    from models import Activity
-    return Activity(type, description, start_datetime, end_datetime,  None)
+    from vytals.models import Activity
+    return Activity(type, description, start_datetime, end_datetime, user_id)
 
 
 user_schema = {
@@ -69,7 +73,8 @@ user_schema = {
         'type': 'string'
     },
     'birthdate': {
-        'type': 'string'
+        'type': 'date',
+        'coerce': to_date
     },
     'email': {
         'type': 'string'
@@ -95,7 +100,8 @@ reading_schema = {
         'type': 'number'
     },
     'date_time': {
-        'type': 'string'
+        'type': 'datetime',
+        'coerce': to_date_time
     }
 }
 
@@ -109,10 +115,12 @@ activity_schema = {
         'type': 'string'
     },
     'start_time': {
-        'type': 'string'
+        'type': 'datetime',
+        'coerce': to_date_time
     },
     'end_time': {
-        'type': 'string'
+        'type': 'datetime',
+        'coerce': to_date_time
     }
 }
 

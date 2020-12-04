@@ -15,3 +15,4 @@ class DevelopmentConfig(Config):
     DEBUG = True
     ENV = 'development'
     SQLALCHEMY_DATABASE_URI = 'sqlite:///test.db'
+    SECRET_KEY = 'oZpvaJbWbYMN4q0tfekvvMdcwCRIpsjl'

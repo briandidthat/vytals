@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 
-from app import db
-from exceptions import InvalidUsage
-from models import User
-from utils import parse_user, user_validator
+from vytals import db
+from vytals.exceptions import InvalidUsage
+from vytals.models import User
+from vytals.utils import parse_user, user_validator
 
 main = Blueprint('main', __name__)
 

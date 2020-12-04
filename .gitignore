@@ -2,7 +2,7 @@
 .idea
 
 # testing db
-/test.db
+/vytals/test.db
 
 
 __pycache__/

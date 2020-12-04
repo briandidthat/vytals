@@ -1,12 +1,13 @@
 from flask import Flask, jsonify
-from exceptions import InvalidUsage
 from flask_sqlalchemy import SQLAlchemy
+
+from .exceptions import InvalidUsage
 
 # instantiate db object
 db = SQLAlchemy()
 
 
-def create_app():
+def init_app():
     app = Flask(__name__)
     app.config.from_object('config.DevelopmentConfig')
 
@@ -20,14 +21,9 @@ def create_app():
         return response
 
     # import and register blueprints
-    from views import main, reading, activity
+    from vytals.views import main, reading, activity
     app.register_blueprint(main)
     app.register_blueprint(reading)
     app.register_blueprint(activity)
 
     return app
-
-
-if __name__ == '__main__':
-    app = create_app()
-    app.run()
