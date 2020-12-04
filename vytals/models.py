@@ -1,5 +1,5 @@
 from vytals import db
-from utils import calculate_age, calculate_duration
+from .utils import calculate_age, calculate_duration
 
 
 class User(db.Model):

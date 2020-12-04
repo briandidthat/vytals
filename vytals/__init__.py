@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
-from exceptions import InvalidUsage
 from flask_sqlalchemy import SQLAlchemy
+
+from .exceptions import InvalidUsage
 
 # instantiate db object
 db = SQLAlchemy()

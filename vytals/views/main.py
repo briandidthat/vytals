@@ -3,15 +3,15 @@ from flask import Blueprint, request, jsonify
 from vytals import db
 from vytals.exceptions import InvalidUsage
 from vytals.models import User
-from vytals.utils import parse_user
+from vytals.utils import parse_user, user_validator
 
 main = Blueprint('main', __name__)
 
 
 @main.route('/users/new', methods=['POST'])
 def create_user():
-    # if not user_validator.validate(request.json):
-    #     raise InvalidUsage(user_validator.errors, status_code=422)
+    if not user_validator.validate(request.json):
+        raise InvalidUsage(user_validator.errors, status_code=422)
 
     data = parse_user(request.json)
     user = User.query.filter_by(email=data.email).first()

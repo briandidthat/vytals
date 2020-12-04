@@ -1,36 +1,34 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, jsonify
 
 from vytals import db
 from vytals.exceptions import InvalidUsage
 from vytals.models import Activity, User
-from vytals.utils import parse_activity
-from vytals.forms import ActivityForm
+from vytals.utils import parse_activity, activity_validator
 
 activity = Blueprint('activity', __name__)
 
 
-@activity.route('/activities/user/new', methods=['GET', 'POST'])
-def create_activity():
-    form = ActivityForm()
-    if form.validate_on_submit():
-        activity = parse_activity(request.json)
-        user = User.query.filter_by(user_id=id).first()
+@activity.route('/activities/user/<int:id>/new', methods=['GET', 'POST'])
+def create_activity(id: int):
+    if not activity_validator.validate(request.json):
+        raise InvalidUsage(activity_validator.errors, status_code=422)
+    activity = parse_activity(request.json)
+    user = User.query.filter_by(user_id=id).first()
 
-        if user is None:
-            raise InvalidUsage("Sorry, that user does not exist.", status_code=404)
+    if user is None:
+        raise InvalidUsage("There is no user associated with the id provided.", status_code=404)
 
-        activity.user_id = user.id
-        db.session.add(activity)
-        db.session.commit()
-        return redirect(url_for('get_activities'))
-    return render_template('add-activity.html', form=form)
+    activity.user_id = user.id
+    db.session.add(activity)
+    db.session.commit()
+    return jsonify(activity=activity.serialize()), 201
 
 
 @activity.route('/activities/user/<int:id>/all', methods=['GET'])
-def get_activities(id):
+def get_activities(id: int):
     activities = Activity.query.filter_by(user_id=id).all()
 
     if len(activities) == 0:
-        raise InvalidUsage(f"There are no readings associated with the id {id}.", status_code=404)
+        raise InvalidUsage("There are no readings associated with the id provided.", status_code=404)
 
-    return render_template('activities.html', activities=activities)
+    return jsonify(activities=[a.serialize() for a in activities])

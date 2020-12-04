@@ -1,9 +1,14 @@
 from datetime import date, datetime
+from cerberus import Validator
+from vytals.exceptions import InvalidUsage
+
+to_date = lambda s: datetime.strptime(s, '%Y-%m-%d')
+to_date_time = lambda s: datetime.fromisoformat(s)
 
 
 def calculate_duration(start_time: datetime, end_time: datetime):
     if not all(isinstance(i, datetime) for i in [start_time, end_time]):
-        raise ValueError("Invalid type.")
+        raise InvalidUsage(message="Invalid type.", status_code=422)
 
     difference = end_time - start_time
     seconds = difference.total_seconds()
@@ -28,7 +33,7 @@ def parse_user(JSON: dict):
     birthdate = date.fromisoformat(birthdate_string)
     email = JSON.get('email', None)
 
-    from models import User
+    from vytals.models import User
     return User(first_name, last_name, birthdate, email)
 
 
@@ -42,7 +47,7 @@ def parse_reading(JSON: dict):
     date_time = JSON.get('date_time', None)
     timestamp = datetime.fromisoformat(date_time)  # convert string to datetime object
 
-    from models import Reading
+    from vytals.models import Reading
     return Reading(weight, blood_pressure, temperature, oxygen_level, pulse, timestamp, None)
 
 
@@ -56,5 +61,67 @@ def parse_activity(JSON: dict):
     end_datetime = datetime.fromisoformat(end_time)  # convert string to datetime object
     user_id = JSON.get('user_id', None)
 
-    from models import Activity
+    from vytals.models import Activity
     return Activity(type, description, start_datetime, end_datetime, user_id)
+
+
+user_schema = {
+    'first_name': {
+        'type': 'string'
+    },
+    'last_name': {
+        'type': 'string'
+    },
+    'birthdate': {
+        'type': 'date',
+        'coerce': to_date
+    },
+    'email': {
+        'type': 'string'
+    }
+}
+
+user_validator = Validator(user_schema)
+
+reading_schema = {
+    'weight': {
+        'type': 'number'
+    },
+    'blood_pressure': {
+        'type': 'number'
+    },
+    'temperature': {
+        'type': 'number'
+    },
+    'oxygen_level': {
+        'type': 'number'
+    },
+    'pulse': {
+        'type': 'number'
+    },
+    'date_time': {
+        'type': 'datetime',
+        'coerce': to_date_time
+    }
+}
+
+reading_validator = Validator(reading_schema)
+
+activity_schema = {
+    'type': {
+        'type': 'string'
+    },
+    'description': {
+        'type': 'string'
+    },
+    'start_time': {
+        'type': 'datetime',
+        'coerce': to_date_time
+    },
+    'end_time': {
+        'type': 'datetime',
+        'coerce': to_date_time
+    }
+}
+
+activity_validator = Validator(activity_schema)
