@@ -1,7 +1,10 @@
 from datetime import date, datetime
+from functools import wraps
 
 from cerberus import Validator
 from email_validator import validate_email, EmailNotValidError
+from flask import jsonify
+from flask_jwt_extended import get_jwt_claims, verify_jwt_in_request
 
 from vytals.exceptions import InvalidUsage
 
@@ -145,3 +148,20 @@ activity_schema = {
 }
 
 activity_validator = Validator(activity_schema)
+
+
+# custom decorator to verify the jwt token and check for appropriate role
+def role_required(name):
+    def decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            verify_jwt_in_request()
+            claims = get_jwt_claims()
+            if name not in claims['roles']:
+                return jsonify(message="Unauthorized Access."), 403
+            result = fn(*args, **kwargs)
+            return result
+
+        return wrapper
+
+    return decorator
