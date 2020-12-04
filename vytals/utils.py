@@ -151,7 +151,7 @@ activity_validator = Validator(activity_schema)
 
 
 # custom decorator to verify the jwt token and check for appropriate role
-def role_required(name):
+def role_required(name: str):
     def decorator(fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
