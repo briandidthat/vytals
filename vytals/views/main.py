@@ -14,7 +14,7 @@ def create_user():
         raise InvalidUsage(user_validator.errors, status_code=422)
 
     data = parse_user(request.json)
-    user = User.query.filter_by(email=data.email).first()
+    user = User.query.filter_by(username=data.username).first()
 
     if user:
         raise InvalidUsage("That user already exists in the system.", status_code=409)

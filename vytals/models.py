@@ -83,7 +83,8 @@ class Reading(db.Model):
 class Activity(db.Model):
     """
     Activity model class to provide database mapping to activities.
-    - serialize: returns a dictionary representation of class attributes for easy JSONificiation
+    - serialize: returns a dictionary representation of class attributes for easy JSONificiation.
+    - duration (property): returns duration in [minutes: seconds] format.
     """
     __tablename__ = 'activity'
     id = db.Column(db.Integer, primary_key=True)
