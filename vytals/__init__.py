@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_sqlalchemy import SQLAlchemy
+
 from .exceptions import InvalidUsage
 
 # instantiate db object
@@ -16,6 +18,8 @@ def init_app():
         db.init_app(app)
 
         jwt = JWTManager(app=app)
+
+        CORS(app)
 
         @app.errorhandler(InvalidUsage)
         def invalid_usage(error):
