@@ -1,7 +1,8 @@
+from datetime import datetime, date
+
 from werkzeug.security import generate_password_hash
 
 from vytals import db
-from .utils import calculate_age, calculate_duration
 
 
 class User(db.Model):
@@ -28,21 +29,17 @@ class User(db.Model):
         self.username = username
         self.password = generate_password_hash(password)
         self.email = email
-        self.birthdate = birthdate
+        self.birthdate = date.fromisoformat(birthdate)
 
     def serialize(self):
         return {
             "id": self.id,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
+            "firstName": self.first_name,
+            "lastName": self.last_name,
             "username": self.username,
             "email": self.email,
-            "age": self.age
+            "birthdate": str(self.birthdate)
         }
-
-    @property
-    def age(self):
-        return calculate_age(self.birthdate)
 
 
 class Reading(db.Model):
@@ -66,15 +63,15 @@ class Reading(db.Model):
         self.temperature = temperature
         self.oxygen_level = oxygen_level
         self.pulse = pulse
-        self.timestamp = timestamp
+        self.timestamp = datetime.fromisoformat(timestamp)
         self.user_id = user_id
 
     def serialize(self):
         return {
             "weight": self.weight,
-            "blood_pressure": self.blood_pressure,
+            "bloodPressure": self.blood_pressure,
             "temperature": self.temperature,
-            "oxygen_level": self.oxygen_level,
+            "oxygenLevel": self.oxygen_level,
             "pulse": self.pulse,
             "timestamp": str(self.timestamp)
         }
@@ -97,24 +94,17 @@ class Activity(db.Model):
     def __init__(self, type, description, start_time, end_time, user_id):
         self.type = type
         self.description = description
-        self.start_time = start_time
-        self.end_time = end_time
+        self.start_time = datetime.fromisoformat(start_time)
+        self.end_time = datetime.fromisoformat(end_time)
         self.user_id = user_id
 
     def serialize(self):
         return {
             "type": self.type,
             "description": self.description,
-            "start_time": str(self.start_time),
-            "end_time": str(self.end_time),
-            "duration": self.duration
+            "startTime": str(self.start_time),
+            "endTime": str(self.end_time)
         }
-
-    @property
-    def duration(self):
-        minutes, seconds = calculate_duration(self.start_time, self.end_time)
-
-        return f"{minutes} minutes:{seconds} seconds"
 
 
 class Role(db.Model):

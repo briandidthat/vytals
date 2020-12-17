@@ -14,13 +14,12 @@ activity = Blueprint('activity', __name__)
 def create_activity(id: int):
     if not activity_validator.validate(request.json):
         raise InvalidUsage(activity_validator.errors, status_code=422)
-    activity = parse_activity(request.json)
-    user = User.query.filter_by(user_id=id).first()
 
+    user = User.query.filter_by(user_id=id).first()
     if user is None:
         raise InvalidUsage("There is no user associated with the id provided.", status_code=404)
 
-    activity.user_id = user.id
+    activity = parse_activity(request.json, id)
     db.session.add(activity)
 
     try:

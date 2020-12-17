@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from vytals import db
 from vytals.exceptions import InvalidUsage
 from vytals.models import Reading, User
-from vytals.utils import parse_reading, reading_validator, role_required
+from vytals.utils import parse_reading, reading_validator, role_required, sort_by_date
 
 reading = Blueprint('reading', __name__)
 
@@ -15,19 +15,18 @@ def create_reading(id: int):
     if not reading_validator.validate(request.json):
         raise InvalidUsage(reading_validator.errors, status_code=404)
 
-    reading = parse_reading(request.json)
     user = User.query.filter_by(id=id).first()
 
     if user is None:
         raise InvalidUsage("There is no user associated with the id provided.", status_code=404)
 
-    reading.user_id = user.id
+    reading = parse_reading(request.json, id)
     db.session.add(reading)
     try:
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        raise InvalidUsage("Internal server error.", 500)
+        raise InvalidUsage("Internal server error. Try again", 500)
     return jsonify(reading=reading.serialize()), 201
 
 
@@ -39,4 +38,7 @@ def get_readings(id: int):
     if len(readings) == 0:
         raise InvalidUsage("There are no readings associated with the id provided.", status_code=404)
 
-    return jsonify(readings=[r.serialize() for r in readings]), 200
+    # will return readings in ascending order by date
+    sorted_readings = sorted(readings, key=sort_by_date)
+
+    return jsonify(readings=[r.serialize() for r in sorted_readings]), 200
