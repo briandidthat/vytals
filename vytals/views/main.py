@@ -21,7 +21,7 @@ def login():
 
     user = User.query.filter_by(username=username).first()
 
-    if not user and check_password_hash(user.password, password):
+    if not user or not check_password_hash(user.password, password):
         raise InvalidUsage("Invalid login credentials.", 401)
 
     access_token = create_access_token(user)
@@ -33,23 +33,22 @@ def register():
     if not user_validator.validate(request.json):
         raise InvalidUsage(user_validator.errors, status_code=422)
 
-    data = parse_user(request.json)
+    user_exists = User.query.filter_by(username=request.json.get('username')).first()
 
-    user = User.query.filter_by(username=data.username).first()
-    role = Role.query.filter_by(name='USER').first()
-
-    if user:
+    if user_exists:
         raise InvalidUsage("That user already exists in the system.", status_code=409)
 
-    data.roles.append(role)
-    db.session.add(data)
+    user = parse_user(request.json)
+    role = Role.query.filter_by(name='USER').first()
+    user.roles.append(role)
+    db.session.add(user)
     try:
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        raise InvalidUsage("Internal server error.", status_code=500)
+        raise InvalidUsage("Internal server error. Try again", status_code=500)
 
-    access_token = create_access_token(data)
+    access_token = create_access_token(user)
     return jsonify(access_token=access_token), 201
 
 
