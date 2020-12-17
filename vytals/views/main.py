@@ -44,9 +44,10 @@ def register():
     db.session.add(user)
     try:
         db.session.commit()
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
         db.session.rollback()
-        raise InvalidUsage("Internal server error. Try again", status_code=500)
+        if "UNIQUE constraint failed: user.email" in str(e):
+            raise InvalidUsage("Error. That email address already exists.", status_code=409)
 
     access_token = create_access_token(user)
     return jsonify(access_token=access_token), 201
