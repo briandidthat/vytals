@@ -1,7 +1,7 @@
 import pytest
 
-from vytals import init_app
-from vytals.models import Activity, User, Reading
+from vytals import init_app, db
+from vytals.models import Activity, User, Reading, Role
 
 
 @pytest.fixture(scope="module")
@@ -31,3 +31,22 @@ def test_client():
     with app.test_client() as testing_client:
         with app.app_context():
             yield testing_client
+
+
+@pytest.fixture(scope="module")
+def init_database():
+    db.create_all()
+
+    user1 = User("snake", "test", "snakey", "123456", "snake@gmail.com", "2000-11-01")
+    user2 = User("snake2", "test2", "snakey2", "123456", "snake2@gmail.com", "2000-11-04")
+    role = Role("USER")
+
+    db.session.add(user1)
+    db.session.add(user2)
+    db.session.add(role)
+
+    db.session.commit()
+
+    yield db
+
+    db.drop_all()

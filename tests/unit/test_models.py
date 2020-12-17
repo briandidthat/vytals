@@ -2,6 +2,7 @@ from datetime import date, datetime
 
 
 def test_new_user_with_fixture(new_user):
+    assert new_user.id == 1
     assert new_user.first_name == "snake"
     assert new_user.last_name == "test"
     assert new_user.username == "snakey"
