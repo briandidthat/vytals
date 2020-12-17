@@ -10,6 +10,7 @@ from vytals.exceptions import InvalidUsage
 
 to_date = lambda s: datetime.strptime(s, '%Y-%m-%d')
 to_date_time = lambda s: datetime.fromisoformat(s)
+sort_by_date = lambda x: datetime.strptime(x['timestamp'], '%Y/%m/%d %H:%M:%S')
 
 
 def test_email_address(email: str):
@@ -69,10 +70,10 @@ login_schema = {
 login_validator = Validator(login_schema)
 
 user_schema = {
-    'first_name': {
+    'firstName': {
         'type': 'string'
     },
-    'last_name': {
+    'lastName': {
         'type': 'string'
     },
     'username': {
@@ -81,13 +82,13 @@ user_schema = {
     'password': {
         'type': 'string'
     },
-    'birthdate': {
-        'type': 'date',
-        'coerce': to_date
-    },
     'email': {
         'type': 'string',
         'coerce': test_email_address,
+    },
+    'birthdate': {
+        'type': 'date',
+        'coerce': to_date
     }
 }
 
@@ -97,19 +98,19 @@ reading_schema = {
     'weight': {
         'type': 'number'
     },
-    'blood_pressure': {
+    'bloodPressure': {
         'type': 'number'
     },
     'temperature': {
         'type': 'number'
     },
-    'oxygen_level': {
+    'oxygenLevel': {
         'type': 'number'
     },
     'pulse': {
         'type': 'number'
     },
-    'date_time': {
+    'timestamp': {
         'type': 'datetime',
         'coerce': to_date_time
     }
@@ -153,5 +154,3 @@ def role_required(name: str):
 
     return decorator
 
-
-sort_by_date = lambda x: datetime.strptime(x['timestamp'], '%Y/%m/%d %H:%M:%S')
