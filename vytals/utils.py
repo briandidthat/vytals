@@ -8,9 +8,21 @@ from flask_jwt_extended import get_jwt_claims, verify_jwt_in_request
 
 from vytals.exceptions import InvalidUsage
 
-to_date = lambda s: datetime.strptime(s, '%Y-%m-%d')
-to_date_time = lambda s: datetime.fromisoformat(s)
-sort_by_date = lambda x: datetime.strptime(x['timestamp'], '%Y/%m/%d %H:%M:%S')
+
+def to_date(date_string):
+    try:
+        valid_date = datetime.strptime(date_string, '%Y-%m-%d')
+        return valid_date
+    except ValueError:
+        return date_string
+
+
+def to_date_time(timestamp):
+    try:
+        valid_date = datetime.fromisoformat(timestamp)
+        return valid_date
+    except ValueError:
+        return timestamp
 
 
 def test_email_address(email: str):
@@ -153,4 +165,3 @@ def role_required(name: str):
         return wrapper
 
     return decorator
-

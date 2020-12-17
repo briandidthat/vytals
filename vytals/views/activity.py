@@ -15,7 +15,7 @@ def create_activity(id: int):
     if not activity_validator.validate(request.json):
         raise InvalidUsage(activity_validator.errors, status_code=422)
 
-    user = User.query.filter_by(user_id=id).first()
+    user = User.query.filter_by(id=id).first()
     if user is None:
         raise InvalidUsage("There is no user associated with the id provided.", status_code=404)
 

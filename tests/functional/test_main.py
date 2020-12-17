@@ -19,13 +19,23 @@ def test_succesful_register(test_client, init_database):
 # ======================================================================================================================
 #    TEST INVALID Login and Registration attempts
 
-def test_register_with_duplicate(test_client, init_database):
+def test_register_with_duplicate_username(test_client, init_database):
     response = test_client.post("/users/new",
                                 json=dict(firstName="snake", lastName="test", username="snakey", password="123456",
                                           email="snake@gmail.com", birthdate="2000-11-01"))
 
     assert response.status_code == 409
     assert b"That user already exists in the system." in response.data
+    assert b"access_token" not in response.data
+
+
+def test_register_with_duplicate_email(test_client, init_database):
+    response = test_client.post("/users/new",
+                                json=dict(firstName="snake", lastName="test", username="random", password="123456",
+                                          email="snake@gmail.com", birthdate="2000-11-01"))
+
+    assert response.status_code == 409
+    assert b"Error. That email address already exists." in response.data
     assert b"access_token" not in response.data
 
 
