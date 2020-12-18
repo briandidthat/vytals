@@ -36,6 +36,6 @@ def get_activities(id: int):
     activities = Activity.query.filter_by(user_id=id).all()
 
     if len(activities) == 0:
-        raise InvalidUsage("There are no readings associated with the id provided.", status_code=404)
+        raise InvalidUsage("There are no activities associated with the user id provided.", status_code=404)
 
     return jsonify(activities=[a.serialize() for a in activities])
