@@ -137,11 +137,11 @@ activity_schema = {
     'description': {
         'type': 'string'
     },
-    'start_time': {
+    'startTime': {
         'type': 'datetime',
         'coerce': to_date_time
     },
-    'end_time': {
+    'endTime': {
         'type': 'datetime',
         'coerce': to_date_time
     }
