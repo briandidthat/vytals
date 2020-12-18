@@ -9,8 +9,8 @@ from vytals.utils import parse_activity, activity_validator, role_required
 activity = Blueprint('activity', __name__)
 
 
+# @role_required('USER')
 @activity.route('/activities/user/<int:id>/new', methods=['GET', 'POST'])
-@role_required('USER')
 def create_activity(id: int):
     if not activity_validator.validate(request.json):
         raise InvalidUsage(activity_validator.errors, status_code=422)
@@ -19,11 +19,11 @@ def create_activity(id: int):
     if user is None:
         raise InvalidUsage("There is no user associated with the id provided.", status_code=404)
 
-    activity = parse_activity(request.json, id)
+    activity = parse_activity(request.json, user.id)
     db.session.add(activity)
 
     try:
-        db.session.commit(activity)
+        db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
         raise InvalidUsage("Internal server error.", status_code=500)
@@ -32,7 +32,6 @@ def create_activity(id: int):
 
 
 @activity.route('/activities/user/<int:id>/all', methods=['GET'])
-@role_required('USER')
 def get_activities(id: int):
     activities = Activity.query.filter_by(user_id=id).all()
 
