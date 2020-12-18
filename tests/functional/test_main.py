@@ -7,7 +7,7 @@ def test_successful_login(test_client, init_database):
     assert b"access_token" in response.data
 
 
-def test_succesful_register(test_client, init_database):
+def test_succesesful_register(test_client, init_database):
     response = test_client.post("/users/new",
                                 json=dict(firstName="testing", lastName="testings", username="shark", password="123456",
                                           email="shark@gmail.com", birthdate="2000-11-01"))
