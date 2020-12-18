@@ -41,3 +41,10 @@ def test_create_reading_with_invalid_timestamp(test_client, init_database):
     assert response.status_code == 422
     assert b"reading" not in response.data
     assert b"must be of datetime type" in response.data
+
+
+def test_get_readings_with_invalid_user(test_client, init_database):
+    response = test_client.get("/readings/user/123/all")
+
+    assert response.status_code == 404
+    assert b"There are no readings associated with the id provided." in response.data
