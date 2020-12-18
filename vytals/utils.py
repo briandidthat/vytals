@@ -14,7 +14,7 @@ def to_date(date_string):
         valid_date = datetime.strptime(date_string, '%Y-%m-%d')
         return valid_date
     except ValueError:
-        return date_string
+        return False
 
 
 def to_date_time(timestamp):
@@ -22,7 +22,7 @@ def to_date_time(timestamp):
         valid_date = datetime.fromisoformat(timestamp)
         return valid_date
     except ValueError:
-        return timestamp
+        return False
 
 
 def test_email_address(email: str):
