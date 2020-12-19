@@ -34,3 +34,10 @@ def test_to_date_with_invalid_date():
     invalid_date = to_date("2222-11-51")
 
     assert invalid_date is False
+    assert not isinstance(invalid_date, date)
+
+def test_to_date_time_with_invalid_date_time():
+    invalid_date_time = to_date("2015-03-33T11:00:00")
+
+    assert invalid_date_time is False
+    assert not isinstance(invalid_date_time, datetime)
