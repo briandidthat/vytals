@@ -29,3 +29,8 @@ def test_successful_email_address_input():
     assert valid_email
     assert isinstance(valid_email, str)
 
+
+def test_to_date_with_invalid_date():
+    invalid_date = to_date("2222-11-51")
+
+    assert invalid_date is False
