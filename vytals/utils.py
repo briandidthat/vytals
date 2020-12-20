@@ -6,8 +6,6 @@ from email_validator import validate_email, EmailNotValidError
 from flask import jsonify
 from flask_jwt_extended import get_jwt_claims, verify_jwt_in_request
 
-from vytals.exceptions import InvalidUsage
-
 
 def to_date(date_string):
     try:
@@ -29,8 +27,8 @@ def test_email_address(email: str):
     try:
         valid = validate_email(email)
         return str(valid.email)
-    except EmailNotValidError as e:
-        raise InvalidUsage(message=str(e), status_code=422)
+    except EmailNotValidError:
+        return False
 
 
 # will parse user data from json and return User instance
