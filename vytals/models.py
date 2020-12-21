@@ -12,18 +12,18 @@ class User(db.Model):
     - age: (property) will return a formatted calculation of age based on birthdate
     """
     __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(50), nullable=False)
-    last_name = db.Column(db.String(100), nullable=False)
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    birthdate = db.Column(db.Date, nullable=False)
-    roles = db.relationship('Role', secondary='user_role', lazy='select', backref=db.backref('user', lazy=True))
-    readings = db.relationship('Reading', backref='user', lazy=True)
-    activities = db.relationship('Activity', backref='user', lazy=True)
+    id: int = db.Column(db.Integer, primary_key=True)
+    first_name: str = db.Column(db.String(50), nullable=False)
+    last_name: str = db.Column(db.String(100), nullable=False)
+    username: str = db.Column(db.String(50), nullable=False, unique=True)
+    password: str = db.Column(db.String(100), nullable=False)
+    email: str = db.Column(db.String(120), unique=True, nullable=False)
+    birthdate: date = db.Column(db.Date, nullable=False)
+    roles: list = db.relationship('Role', secondary='user_role', lazy='select', backref=db.backref('user', lazy=True))
+    readings: list = db.relationship('Reading', backref='user', lazy=True)
+    activities: list = db.relationship('Activity', backref='user', lazy=True)
 
-    def __init__(self, first_name, last_name, username, password, email, birthdate):
+    def __init__(self, first_name: str, last_name: str, username: str, password: str, email: str, birthdate: str):
         self.first_name = first_name
         self.last_name = last_name
         self.username = username
@@ -57,7 +57,8 @@ class Reading(db.Model):
     timestamp = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, weight, blood_pressure, temperature, oxygen_level, pulse, timestamp, user_id):
+    def __init__(self, weight: float, blood_pressure: int, temperature: float, oxygen_level: int, pulse: int,
+                 timestamp: str, user_id: int):
         self.weight = weight
         self.blood_pressure = blood_pressure
         self.temperature = temperature
@@ -91,7 +92,7 @@ class Activity(db.Model):
     end_time = db.Column(db.DateTime, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    def __init__(self, type, description, start_time, end_time, user_id):
+    def __init__(self, type: str, description: str, start_time: str, end_time: str, user_id: int):
         self.type = type
         self.description = description
         self.start_time = datetime.fromisoformat(start_time)
@@ -112,7 +113,7 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.name = name
 
 
