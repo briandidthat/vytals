@@ -2,6 +2,7 @@ import pytest
 
 from vytals import init_app, db
 from vytals.models import Activity, User, Reading, Role
+from flask_jwt_extended import create_access_token
 
 
 @pytest.fixture(scope="module")
@@ -21,6 +22,14 @@ def new_activity():
 def new_reading():
     reading = Reading(115.3, 111, 97.9, 97, 89, "2015-04-25T12:00:00", 1)
     return reading
+
+
+@pytest.fixture(scope="module")
+def access_token():
+    user = User("snake", "test", "snakey", "123456", "snake@gmail.com", "2000-11-01")
+    user.roles.append(Role("USER"))
+    token = create_access_token(identity=user)
+    return token
 
 
 @pytest.fixture(scope="module")

@@ -10,6 +10,7 @@ reading = Blueprint('reading', __name__)
 
 
 @reading.route('/readings/user/<int:id>/new', methods=['POST'])
+@role_required('USER')
 def create_reading(id: int):
     if not reading_validator.validate(request.json):
         raise InvalidUsage(reading_validator.errors, status_code=422)
@@ -29,6 +30,7 @@ def create_reading(id: int):
     return jsonify(reading=reading.serialize()), 201
 
 
+@role_required('USER')
 @reading.route('/readings/user/<int:id>/all', methods=['GET'])
 def get_readings(id: int):
     readings = Reading.query.filter_by(user_id=id).all()

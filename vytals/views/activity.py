@@ -9,8 +9,8 @@ from vytals.utils import parse_activity, activity_validator, role_required
 activity = Blueprint('activity', __name__)
 
 
-# @role_required('USER')
 @activity.route('/activities/user/<int:id>/new', methods=['GET', 'POST'])
+@role_required('USER')
 def create_activity(id: int):
     if not activity_validator.validate(request.json):
         raise InvalidUsage(activity_validator.errors, status_code=422)
@@ -32,6 +32,7 @@ def create_activity(id: int):
 
 
 @activity.route('/activities/user/<int:id>/all', methods=['GET'])
+@role_required('USER')
 def get_activities(id: int):
     activities = Activity.query.filter_by(user_id=id).all()
 
