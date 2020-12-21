@@ -1,10 +1,12 @@
 import json
 
+
 # TEST SUCCESSFUL Reading requests
 
 
-def test_successful_create_reading(test_client, init_database):
+def test_successful_create_reading(test_client, init_database, access_token):
     response = test_client.post("/readings/user/1/new",
+                                headers={'Authorization': f'Bearer {access_token}'},
                                 json=dict(weight=115.3, bloodPressure=111, temperature=97.9, oxygenLevel=97,
                                           pulse=89, timestamp="2015-04-25T12:00:00"))
 
@@ -12,8 +14,11 @@ def test_successful_create_reading(test_client, init_database):
     assert b"reading" in response.data
 
 
-def test_successful_get_readings(test_client, init_database):
-    response = test_client.get("/readings/user/1/all")
+def test_successful_get_readings(test_client, init_database, access_token):
+    headers = {
+        'Authorization': f'Bearer {access_token}'
+    }
+    response = test_client.get("/readings/user/1/all", headers=headers)
     items = json.loads(response.data)
 
     assert response.status_code == 200
@@ -24,8 +29,9 @@ def test_successful_get_readings(test_client, init_database):
 # ======================================================================================================================
 # TEST INVALID Reading requests
 
-def test_create_reading_with_invalid_user(test_client, init_database):
+def test_create_reading_with_invalid_user(test_client, init_database, access_token):
     response = test_client.post("/readings/user/123/new",
+                                headers={'Authorization': f'Bearer {access_token}'},
                                 json=dict(weight=115.3, bloodPressure=111, temperature=97.9, oxygenLevel=97,
                                           pulse=89, timestamp="2015-04-25T12:00:00"))
 
@@ -33,8 +39,18 @@ def test_create_reading_with_invalid_user(test_client, init_database):
     assert b"There is no user associated with the id provided." in response.data
 
 
-def test_create_reading_with_invalid_timestamp(test_client, init_database):
+def test_create_reading_without_token(test_client, init_database):
+    response = test_client.post("/readings/user/123/new",
+                                json=dict(weight=115.3, bloodPressure=111, temperature=97.9, oxygenLevel=97,
+                                          pulse=89, timestamp="2015-04-25T12:00:00"))
+
+    assert response.status_code == 401
+    assert b"Missing Authorization Header" in response.data
+
+
+def test_create_reading_with_invalid_timestamp(test_client, init_database, access_token):
     response = test_client.post("/readings/user/1/new",
+                                headers={'Authorization': f'Bearer {access_token}'},
                                 json=dict(weight=115.3, bloodPressure=111, temperature=97.9, oxygenLevel=97,
                                           pulse=89, timestamp="2015-04-25T12:asdd"))
 
@@ -43,8 +59,8 @@ def test_create_reading_with_invalid_timestamp(test_client, init_database):
     assert b"must be of datetime type" in response.data
 
 
-def test_get_readings_with_invalid_user(test_client, init_database):
-    response = test_client.get("/readings/user/123/all")
+def test_get_readings_with_invalid_user(test_client, init_database, access_token):
+    response = test_client.get("/readings/user/123/all", headers={'Authorization': f'Bearer {access_token}'})
 
     assert response.status_code == 404
     assert b"There are no readings associated with the id provided." in response.data

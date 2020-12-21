@@ -9,7 +9,7 @@ from vytals.utils import parse_activity, activity_validator, role_required
 activity = Blueprint('activity', __name__)
 
 
-# @role_required('USER')
+@role_required('USER')
 @activity.route('/activities/user/<int:id>/new', methods=['GET', 'POST'])
 def create_activity(id: int):
     if not activity_validator.validate(request.json):
@@ -31,6 +31,7 @@ def create_activity(id: int):
     return jsonify(activity=activity.serialize()), 201
 
 
+@role_required('USER')
 @activity.route('/activities/user/<int:id>/all', methods=['GET'])
 def get_activities(id: int):
     activities = Activity.query.filter_by(user_id=id).all()
