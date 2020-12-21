@@ -15,10 +15,7 @@ def test_successful_create_reading(test_client, init_database, access_token):
 
 
 def test_successful_get_readings(test_client, init_database, access_token):
-    headers = {
-        'Authorization': f'Bearer {access_token}'
-    }
-    response = test_client.get("/readings/user/1/all", headers=headers)
+    response = test_client.get("/readings/user/1/all", headers={'Authorization': f'Bearer {access_token}'})
     items = json.loads(response.data)
 
     assert response.status_code == 200
@@ -45,6 +42,7 @@ def test_create_reading_without_token(test_client, init_database):
                                           pulse=89, timestamp="2015-04-25T12:00:00"))
 
     assert response.status_code == 401
+    assert b"reading" not in response.data
     assert b"Missing Authorization Header" in response.data
 
 

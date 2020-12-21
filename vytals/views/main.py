@@ -51,9 +51,3 @@ def register():
 
     access_token = create_access_token(user)
     return jsonify(access_token=access_token), 201
-
-
-@main.route('/users/all', methods=['GET'])
-def get_all_users():
-    users = User.query.all()
-    return jsonify(users=[u.serialize() for u in users]), 200
